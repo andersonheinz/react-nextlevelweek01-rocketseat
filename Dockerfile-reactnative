@@ -1,0 +1,31 @@
+FROM node:12.18.0-alpine
+
+LABEL maintainer="Anderson Heinz"
+
+RUN mkdir -p /home/ecoleta/mobile/node_modules
+
+WORKDIR /home/ecoleta/mobile
+ENV PATH /home/ecoleta/mobile/node_modules/.bin:$PATH
+
+COPY ./mobile/package*.json ./
+
+COPY ./mobile/ ./
+
+RUN apk update && apk add bash
+RUN apk add --no-cache bash
+
+RUN npm install -g expo-cli
+
+RUN yarn add expo
+
+RUN expo install expo-font @expo-google-fonts/ubuntu @expo-google-fonts/roboto react-native-gesture-handler
+RUN expo install react-native-maps expo-constants react-navigation react-navigation-stack react-native-gesture-handler
+RUN expo install react-native-safe-area-context @react-native-community/masked-view react-native-svg expo-location expo-mail-composer
+
+ENV REACT_NATIVE_PACKAGER_HOSTNAME="192.168.X.XXX"
+
+EXPOSE 19000
+EXPOSE 19001
+EXPOSE 19002
+
+CMD ["yarn", "start"]

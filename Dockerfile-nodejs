@@ -1,0 +1,15 @@
+FROM node:12.18.0-alpine
+
+RUN mkdir -p /home/ecoleta/server/node_modules
+
+WORKDIR /home/ecoleta/server
+
+COPY ./server/package*.json ./
+
+RUN npm i -f
+
+COPY ./server/ ./
+
+EXPOSE 3333
+
+CMD ["yarn", "dev", "start"]

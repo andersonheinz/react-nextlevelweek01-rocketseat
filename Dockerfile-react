@@ -1,0 +1,18 @@
+FROM node:12.18.0-alpine
+
+RUN mkdir -p /home/ecoleta/web/node_modules
+
+WORKDIR /home/ecoleta/web
+ENV PATH /home/ecoleta/web/node_modules/.bin:$PATH
+
+COPY ./web/package*.json ./
+
+RUN yarn add typescript
+
+RUN npm install react-scripts@3.4 -g
+
+COPY ./web/ ./
+
+EXPOSE 3000
+
+CMD ["npm", "start"]

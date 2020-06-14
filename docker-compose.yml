@@ -1,0 +1,64 @@
+version: "3"
+
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile-nodejs
+    command: yarn dev start
+    extra_hosts:
+      - "devserver:192.168.X.XXX"
+    expose:
+      - "3333"
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./server/:/server/
+      - /home/ecoleta/server/node_modules
+
+  react:
+    build:
+      context: .
+      dockerfile: Dockerfile-react
+    command: npm start
+    extra_hosts:
+      - "webserver:192.168.X.XXX"
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web/:/web/
+      - /home/ecoleta/web/node_modules
+    stdin_open: true
+    tty: true
+    depends_on:
+      - node
+
+  reactnative:
+    container_name: expo-reactnative
+    build:
+      context: .
+      dockerfile: Dockerfile-reactnative
+    command: npm start
+    environment:
+      - REACT_NATIVE_PACKAGER_HOSTNAME=192.168.X.XXX
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+    extra_hosts:
+      - "mobileserver:192.168.X.XXX"
+    expose:
+      - "19000"
+      - "19001"
+      - "19002"
+    ports:
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+    volumes:
+      - ./mobile/:/mobile/
+      - /home/ecoleta/mobile/node_modules
+    stdin_open: true
+    tty: true
+    depends_on:
+      - node
+      - react
